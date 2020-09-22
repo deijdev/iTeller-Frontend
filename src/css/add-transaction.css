@@ -1,0 +1,20 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+#add-transaction-container{
+    border: 2px;
+    width: 500px;
+    margin: 0 auto;
+}
+
+#transaction-categories{
+    display: flex;
+    width: 100%
+}
+#transaction-categories div{
+    flex: 20%;
+    background: red;
+    border: 1px solid blue;
+}
