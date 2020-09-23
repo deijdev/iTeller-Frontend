@@ -3,18 +3,71 @@
     padding: 0;
     box-sizing: border-box;
 }
-#add-transaction-container{
-    border: 2px;
+#add-transaction-container{ 
+    /* border: 2px; */
     width: 500px;
     margin: 0 auto;
-}
+} 
 
 #transaction-categories{
+    margin-top: 30px;
     display: flex;
-    width: 100%
+    flex-wrap: wrap;
+    text-align: center;
+   
 }
-#transaction-categories div{
-    flex: 20%;
-    background: red;
-    border: 1px solid blue;
+#transaction-categories > div{
+
+    width: 130px;
+    height: 50px;
+    background: #f2f2f2;
+    border: 1px solid #333333;
+    cursor: pointer;
+    line-height: 50px;
+}
+
+#transaction-categories :hover{
+    
+    background: rgb(95, 218, 255);
+    border: 1px solid #333333;
+    
+}
+
+#transaction-type{
+    width: 300px;
+    display:flex;
+    text-align: center;
+    line-height: 60px;
+}
+#transaction-type > div{
+    margin-top: 40px;
+    width: 50%;
+    height: 60px;
+    background: #f2f2f2;
+    border: 1px solid #333333;
+    cursor: pointer;
+}
+
+#transaction-type :hover {
+    background: rgb(95, 218, 255);
+}
+
+#transaction-vendor{
+    margin-top: 40px;
+}
+
+input {
+    height: 30px;
+    margin-top: 10px;
+}
+
+input[type="submit"]{
+    margin-top: 40px;
+    width: 150px;
+    height: 40px;
+    background: rgb(91, 91, 241);
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 5px;
 }
