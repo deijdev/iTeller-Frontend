@@ -77,8 +77,7 @@ class AddTransaction extends Component {
                     </div>
                     
                     <br/>
-                        
-                    
+                 
                     <label htmlFor="category">Category</label>
                     <br/>
 
