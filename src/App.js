@@ -17,31 +17,86 @@ class App extends Component {
   constructor(){
     super()
     this.state = {
+      users : [],
       currentUser : {id: 1, name: 'Sandra Levy', email: "sl@demo.com", password: "demo"}
     }
   }
 
+
+  componentDidMount(){
+
+    fetch('http://localhost:3000/users')
+    .then(resp => resp.json())
+    .then(usersArray => {
+  
+      this.setState({
+        users : usersArray
+      })
+    })
+
+////////
+
+    if(localStorage.getItem("token") != null ){
+      fetch('http://localhost:3000/decode_token', {
+        headers : {"Authenticate": localStorage.token, 
+        'Content-Type':'application/json'}
+      })
+      .then(resp => resp.json())
+      .then(userData => {
+        this.setState({currentUser : userData})
+      })
+    }
+
+  }
+
+  ///////Methods///////
+
+  //add a transaction//
   handleAddTransaction = (e, formObj) => {
     e.preventDefault()
     console.log("hit handle transaction", formObj)
-      // fetch('http://localhost:3000/transactions',{
-      //   method: 'POST',
-      //   headers: {'Content-Type':'application-json'},
-      //   body: JSON.stringify(formObj)
-      // })
-      // .then( response => response.json())
+      fetch('http://localhost:3000/transactions',{
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(formObj)
+      })
+      .then( response => response.json())
       // .then(transactionData => {  
       // })
   }
 
+  //login/logout//
+
+  login=(e, creds)=>{
+    e.preventDefault()
+  
+    fetch('http://localhost:3000/login', {
+      method : 'POST',
+      headers : {'Content-Type':'application/json',
+      "Authenticate": localStorage.token},
+      body : JSON.stringify(creds)
+    })
+    .then(resp => resp.json())
+  //   .then(data => {
+  //     if (data.error){
+  //       this.setState({errorMessage: data.error})
+  //     }else{
+  //     localStorage.setItem("token", data.token)
+  //     this.setState({currentUser : data.user_data.user})
+  //     }
+  //   })
+  }
+
+  ////////////////
 
   render(){
     return ( 
       <Router>
         <Switch> 
-          <Route exact path="/" render={ () => <Home/> } />
+          <Route exact path="/" render={ () => <Home login={this.login}/>} />
           <Route exact path="/dashboard" render={ () => <Dashboard/> } />
-          <Route exact path="/add-transaction" render={ () => <AddTransaction user={this.currentUser} handleAddTransaction={this.handleAddTransaction}/>} />
+          <Route exact path="/add-transaction" render={ () => <AddTransaction user={this.state.currentUser} handleAddTransaction={this.handleAddTransaction}/>} />
+
         </Switch>
         </Router>
       )

@@ -1,0 +1,15 @@
+#login-sign-up-container{
+    width: 80%;
+    margin: 0 auto;
+}
+#login-sign-up-container h1{
+    text-align: center;
+}
+#login{
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 60px;
+}
+#login input{
+    width: 100%;
+}

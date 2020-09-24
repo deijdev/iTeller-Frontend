@@ -17,7 +17,6 @@
    
 }
 #transaction-categories > div{
-
     width: 130px;
     height: 50px;
     background: #f2f2f2;
@@ -60,7 +59,13 @@ input {
     height: 30px;
     margin-top: 10px;
 }
-
+#transaction-note{
+    margin-top: 40px;
+}
+#transaction-note textarea{
+    width: 200px;
+    height: 70px;
+}
 input[type="submit"]{
     margin-top: 40px;
     width: 150px;

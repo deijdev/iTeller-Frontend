@@ -8,18 +8,23 @@ class AddTransaction extends Component {
         super()
         this.state={
             formObj : {
-
+                account_id: '',
                 amount : '',
                 name : '',
                 category : '',
                 type : '',
-                vendor : ''
+                vendor : '',
+                note : ''
 
-            },
-            categoryClicked: false
+            }
         }
     }
 
+    componentDidMount(){
+        this.setState({
+            formObj : {...this.state.formObj, user_id : this.props.user.id}
+        })
+    }
 
     handleFormTextInput = (e) => {
         this.setState({
@@ -60,10 +65,13 @@ class AddTransaction extends Component {
     }
     
     render() {
+        let {handleAddTransaction} = this.props
+
+
         return (
             <div id="add-transaction-container">
                <h1>Add Transaction</h1>
-               <form onSubmit={(e) => this.props.handleAddTransaction(e, this.state.formObj)}>
+               <form onSubmit={(e) => handleAddTransaction(e, this.state.formObj)}>
                     <div>
                         <label htmlFor="amount">Amount</label>
                         <br/>
@@ -93,7 +101,6 @@ class AddTransaction extends Component {
                         <div id="Income" onClick={this.handleCategory}>Income</div>
                     </div>
                     
-
                     <br/>
 
                     <label htmlFor="type">Type</label>
@@ -106,6 +113,12 @@ class AddTransaction extends Component {
                         <label htmlFor="vendor">Vendor</label>
                         <br/>
                         <input type="text" value={this.state.formObj.vendor} name="vendor" onChange={(e)=>this.handleFormTextInput(e)}/>
+                    </div>
+
+                    <div id="transaction-note"> 
+                        <label htmlFor="note">Note</label>
+                        <br/>
+                        <textarea value={this.state.formObj.note} name="note" onChange={(e)=>this.handleFormTextInput(e)}/>
                     </div>
                     
                     <input type="submit" value="Add"/>
