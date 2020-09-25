@@ -7,7 +7,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link, 
+  Redirect
 } from "react-router-dom";
 
 
@@ -18,7 +19,7 @@ class App extends Component {
     super()
     this.state = {
       users : [],
-      currentUser : {id: 1, name: 'Sandra Levy', email: "sl@demo.com", password: "demo"}
+      currentUser : null
     }
   }
 
@@ -77,24 +78,30 @@ class App extends Component {
       body : JSON.stringify(creds)
     })
     .then(resp => resp.json())
-  //   .then(data => {
-  //     if (data.error){
-  //       this.setState({errorMessage: data.error})
-  //     }else{
-  //     localStorage.setItem("token", data.token)
-  //     this.setState({currentUser : data.user_data.user})
-  //     }
-  //   })
+    .then(data => {
+      if (data.error){
+        this.setState({errorMessage: data.error})
+      }else{
+      localStorage.setItem("token", data.token)
+      this.setState({currentUser : data.user_data.user})
+      }
+    })
   }
 
   ////////////////
 
   render(){
+    const {currentUser} = this.state
     return ( 
       <Router>
         <Switch> 
-          <Route exact path="/" render={ () => <Home login={this.login}/>} />
-          <Route exact path="/dashboard" render={ () => <Dashboard/> } />
+          <Route exact path="/" render={ () => {
+            return currentUser? <Redirect to="/dashboard" /> : <Home login={this.login}/>
+            } 
+          }/>
+          <Route exact path="/dashboard" render={ () => {
+            return currentUser? <Dashboard user={currentUser}/> : <Redirect to='/'/>
+          } }/>
           <Route exact path="/add-transaction" render={ () => <AddTransaction user={this.state.currentUser} handleAddTransaction={this.handleAddTransaction}/>} />
 
         </Switch>

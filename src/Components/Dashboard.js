@@ -4,14 +4,22 @@ import {Link} from "react-router-dom"
 
 class Dashboard extends Component {
     render() {
-        return (
-            <div>
-                <Link to="/add-transaction">
-                    <button > Add Transaction</button>
-                </Link>
-            </div>
-        );
+
+        if(this.props.user){
+  
+                return (
+                    
+                    <div>
+                        <h1>Welcome {this.props.user.name}</h1>
+                        <Link to="/add-transaction">
+                            <button > Add Transaction</button>
+                        </Link>
+                    </div>
+                
+                );
+        } else {
+            return null
+        }
     }
 }
-
-export default Dashboard;
+export default Dashboard
