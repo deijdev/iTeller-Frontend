@@ -7,7 +7,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link, 
   Redirect
 } from "react-router-dom";
 
@@ -18,7 +17,6 @@ class App extends Component {
   constructor(){
     super()
     this.state = {
-      users : [],
       currentUser : null
     }
   }
@@ -26,14 +24,6 @@ class App extends Component {
 
   componentDidMount(){
 
-    fetch('http://localhost:3000/users')
-    .then(resp => resp.json())
-    .then(usersArray => {
-  
-      this.setState({
-        users : usersArray
-      })
-    })
 
 ////////
 
