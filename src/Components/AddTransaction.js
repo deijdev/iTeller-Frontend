@@ -21,14 +21,14 @@ class AddTransaction extends Component {
     }
 
     componentDidMount(){
-        this.setState({
-            formObj : {...this.state.formObj, user_id : this.props.user.id}
-        })
+            this.setState({
+                formObj : {...this.state.formObj, user_id : this.props.user.id}
+            })
     }
 
     handleFormTextInput = (e) => {
         this.setState({
-            formObj: {...this.state.formObj, [e.target.name] : e.target.value}
+            formObj: {...this.state.formObj, [e.target.name] : e.target.value, account_id : this.props.selectedAccount.id},
         })
     }
 

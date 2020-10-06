@@ -5,11 +5,13 @@ class Transaction extends Component {
         let {vendor,amount,date,category} = this.props.transaction
         return (
             <div>
+                <br></br>
                 {/* Display, vendor, amount, date, category  */}
-                <h1>{vendor}</h1>
-                <h2>{amount}</h2>
-                <p>{new Date(date).toLocaleDateString()}</p>
-                <p>{category}</p>
+                <p>Vendor: {vendor}</p>
+                <p>Amount: {amount}</p>
+                <p>Date: {new Date(date).toLocaleDateString()}</p>
+                <p>Category: {category}</p>
+                <br></br>
             </div>
         );
     }
