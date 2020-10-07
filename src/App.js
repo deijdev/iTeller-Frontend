@@ -20,7 +20,8 @@ class App extends Component {
       currentUser : null,
       accounts : [],
       selectedAccount: null,
-      transactions: []
+      transactions: [],
+      errorMessage : null
     }
   }
 
@@ -90,15 +91,28 @@ class App extends Component {
   //add a transaction//
   handleAddTransaction = (e, formObj) => {
     e.preventDefault()
-    console.log("hit handle transaction", formObj)
-  //     fetch('http://localhost:3000/transactions',{
-  //       method: 'POST',
-  //       headers: {'Content-Type':'application/json'},
-  //       body: JSON.stringify(formObj)
-  //     })
-  //     .then( response => response.json())
-  //     .then(transactionData => {  
-  //     })
+    console.log(formObj)
+      fetch('http://localhost:3000/transactions',{
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(formObj)
+      })
+      .then( response => response.json())
+      .then(transactionData => { 
+        if (transactionData.error) {
+            this.setState({
+              errorMessage : transactionData.error
+            })
+        }else{
+          this.setState({
+            transactions : this.state.transactions.push(transactionData)
+          })
+          // redirect to dashboard after everything is successful
+          window.location.assign("/dashboard");
+          return false;
+        }
+      })
+    
   }
 
   //login/logout//
@@ -126,7 +140,7 @@ class App extends Component {
   ////////////////
 
   render(){
-    const {currentUser, accounts, transactions, selectedAccount} = this.state
+    const {errorMessage, currentUser, accounts, transactions, selectedAccount} = this.state
     return ( 
       <Router>
         <Switch> 
@@ -137,7 +151,7 @@ class App extends Component {
             return currentUser? <Dashboard user={currentUser} accounts={accounts}  handleSelectAccount={this.handleSelectAccount} transactions={transactions} selectedAccount={selectedAccount}/> : <Redirect to='/'/>
           }}/>
           <Route exact path="/add-transaction" render={ () => {
-            return currentUser? <AddTransaction user={currentUser} handleAddTransaction={this.handleAddTransaction} selectedAccount={selectedAccount} /> : null
+            return currentUser? <AddTransaction errorMessage={errorMessage} user={currentUser} handleAddTransaction={this.handleAddTransaction} selectedAccount={selectedAccount} /> : null
           }}/>
 
         </Switch>

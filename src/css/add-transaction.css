@@ -3,6 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+#form-error{
+    color: red;
+}
 #add-transaction-container{ 
     /* border: 2px; */
     width: 500px;

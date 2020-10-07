@@ -12,9 +12,9 @@ class AddTransaction extends Component {
                 amount : '',
                 name : '',
                 category : '',
-                type : '',
                 vendor : '',
-                note : ''
+                note : '',
+                t_type: ''
 
             }
         }
@@ -56,7 +56,7 @@ class AddTransaction extends Component {
             if(t_type.id === type){
                 t_type.style.backgroundColor = 'red'
                 this.setState({
-                    formObj: {...this.state.formObj, type : t_type.id}
+                    formObj: {...this.state.formObj, t_type : t_type.id}
                 })
             } else {
                 t_type.style.backgroundColor = '#f2f2f2'
@@ -71,6 +71,13 @@ class AddTransaction extends Component {
         return (
             <div id="add-transaction-container">
                <h1>Add Transaction</h1>
+               <div id="form-error">    
+               {this.props.errorMessage ? 
+                <h3>{this.props.errorMessage}</h3>
+                :
+                null
+               }
+               </div>
                <form onSubmit={(e) => handleAddTransaction(e, this.state.formObj)}>
                     <div>
                         <label htmlFor="amount">Amount</label>
@@ -122,6 +129,7 @@ class AddTransaction extends Component {
                     </div>
                     
                     <input type="submit" value="Add"/>
+
                </form>
             </div>
         );
