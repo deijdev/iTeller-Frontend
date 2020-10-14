@@ -21,14 +21,16 @@ class App extends Component {
       accounts : [],
       selectedAccount: null,
       transactions: [],
-      errorMessage : null
+      errorMessage : null,
+      date : {},
+      monthsTransactions: [],
+      expensesSum : null
     }
   }
 
   componentDidMount(){
 
 ////////
-
     if(localStorage.getItem("token") != null ){
       fetch('http://localhost:3000/decode_token', {
         headers : {"Authenticate": localStorage.token, 
@@ -36,15 +38,48 @@ class App extends Component {
       })
       .then(resp => resp.json())
       .then(userData => {
-        this.setState({currentUser : userData})
-        // fetch user accounts
-        this.fetchAccountsFromUser(userData.id)
+          //set date to variable
+          let date = new Date()
+          this.setState({currentUser : userData})
+          // fetch user accounts
+          this.fetchAccountsFromUser(userData.id)
+          // Set current Date
+          this.setState({
+            date : {
+              month: this.getMonthFromDate(date.getMonth()),
+              day: date.getDate(),
+              year: date.getFullYear(),
+              dow: this.getDayOfWeek(date.getDay())
+            }
+          })
       })
+
     }
-   
+
+    
   }
 
   ///////Methods///////
+
+  //sort transactions for Dashboard component//
+  sortedTransactions = (transactions) => {
+        // find all the transactions from 'Transactions' where state.date.month is === to transaction.date.getMonth
+        let monthsTransactions = transactions.filter(tran => this.getMonthFromDate(new Date(tran.date).getMonth()) === this.state.date.month)
+
+        this.setState({
+          monthsTransactions : monthsTransactions.sort((a,b)=> new Date(b.date) - new Date(a.date))
+        })
+   }
+
+  getMonthFromDate = monthNum => {
+    let months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    return months[monthNum]
+  }
+  getDayOfWeek = dayNum => {
+    let days = ['Monday','Tuesday','Wednesday','Thursday', 'Friday', 'Saturday','Sunday']
+    return days[dayNum - 1]
+  }
+
   fetchAccountsFromUser = (id) => {
     // fetch the user accounts 
     fetch(`http://localhost:3000/users/${id}`)
@@ -57,6 +92,7 @@ class App extends Component {
             
         })
         this.fetchAccountTransactions(user.accounts[0].id)
+      
     })
   }
 
@@ -84,7 +120,10 @@ class App extends Component {
         this.setState({
             transactions : account.transactions
         })
-    })
+        this.sortedTransactions(account.transactions)
+        this.sumExpenses()
+    })  
+  
 }
 
 
@@ -137,10 +176,22 @@ class App extends Component {
     })
   }
 
+sumExpenses=()=>{
+  let expenses = this.state.monthsTransactions.filter(t => t.t_type == 'expense')
+  
+  var expensesSum = expenses.reduce((accumulator, expense)=>{
+   return accumulator + expense.amount
+  }, 0)
+  
+  this.setState({
+    expensesSum : expensesSum
+  })
+}
+
   ////////////////
 
   render(){
-    const {errorMessage, currentUser, accounts, transactions, selectedAccount} = this.state
+    const {date, errorMessage, currentUser, accounts, monthsTransactions, selectedAccount, expensesSum} = this.state
     return ( 
       <Router>
         <Switch> 
@@ -148,7 +199,7 @@ class App extends Component {
             return currentUser? <Redirect to="/dashboard" /> : <Home login={this.login}/>
           }}/>
           <Route exact path="/dashboard" render={ () => {
-            return currentUser? <Dashboard user={currentUser} accounts={accounts}  handleSelectAccount={this.handleSelectAccount} transactions={transactions} selectedAccount={selectedAccount}/> : <Redirect to='/'/>
+            return currentUser? <Dashboard expensesSum={expensesSum}  date={date} user={currentUser} accounts={accounts}  handleSelectAccount={this.handleSelectAccount} transactions={monthsTransactions} selectedAccount={selectedAccount}/> : <Redirect to='/'/>
           }}/>
           <Route exact path="/add-transaction" render={ () => {
             return currentUser? <AddTransaction errorMessage={errorMessage} user={currentUser} handleAddTransaction={this.handleAddTransaction} selectedAccount={selectedAccount} /> : null
