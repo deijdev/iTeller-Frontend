@@ -65,7 +65,7 @@ class AddTransaction extends Component {
     }
     
     render() {
-        let {handleAddTransaction} = this.props
+        let {handleAddTransaction, handleAccountBalance} = this.props
 
 
         return (
@@ -78,7 +78,10 @@ class AddTransaction extends Component {
                 null
                }
                </div>
-               <form onSubmit={(e) => handleAddTransaction(e, this.state.formObj)}>
+               <form onSubmit={(e) => {
+                   handleAddTransaction(e, this.state.formObj)
+                //    handleAccountBalance(e, this.props.selectedAccount, this.state.formObj.amount, this.state.formobj.t_type)
+                }}>
                     <div>
                         <label htmlFor="amount">Amount</label>
                         <br/>

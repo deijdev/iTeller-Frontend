@@ -55,8 +55,6 @@ class App extends Component {
       })
 
     }
-
-    
   }
 
   ///////Methods///////
@@ -88,11 +86,9 @@ class App extends Component {
         // set initial state for accounts and selectedAccount
         this.setState({
             accounts : user.accounts,
-            selectedAccount : user.accounts[0]
-            
+            selectedAccount : user.accounts[0] 
         })
         this.fetchAccountTransactions(user.accounts[0].id)
-      
     })
   }
 
@@ -130,6 +126,7 @@ class App extends Component {
   //add a transaction//
   handleAddTransaction = (e, formObj) => {
     e.preventDefault()
+ 
     console.log(formObj)
       fetch('http://localhost:3000/transactions',{
         method: 'POST',
@@ -150,9 +147,30 @@ class App extends Component {
           window.location.assign("/dashboard");
           return false;
         }
-      })
-    
+      }) 
   }
+
+  //handle account balance//
+  handleAccountBalance=(e, selectedAccount, amount, t_type)=>{
+    e.preventDefault()
+    // debugger
+    let newBalance
+    t_type === 'expense' ? newBalance = selectedAccount.balance - amount : newBalance = selectedAccount.balance + amount 
+    const accObj = {
+      balance : newBalance
+    }
+    
+    fetch(`http://localhost:3000/accounts/${selectedAccount.id}`,{
+      method : 'PATCH',
+      headers : {'Content-Type': 'application/json'},
+      body : JSON.stringify(accObj)
+    })
+    .then(resp => resp.json)
+    .then(acctObj => {
+      console.log('yay:', acctObj)
+    })
+  }
+  
 
   //login/logout//
 
@@ -188,9 +206,29 @@ sumExpenses=()=>{
   })
 }
 
+///
+handleDeleteTransaction = (e, id) => {
+
+  // debugger
+  fetch(`http://localhost:3000/transactions/${id}`, {
+    method : 'DELETE',
+    headers : {'Content-Type': 'application/json'}
+  })
+
+    let newTransactions = this.state.monthsTransactions.filter(transaction =>  transaction.id !== id)
+    // debugger
+  
+    this.setState({
+      monthsTransactions : newTransactions
+    })
+    
+}
+
+
   ////////////////
 
   render(){
+    const {handleAccountBalance, handleDeleteTransaction} = this
     const {date, errorMessage, currentUser, accounts, monthsTransactions, selectedAccount, expensesSum} = this.state
     return ( 
       <Router>
@@ -199,10 +237,10 @@ sumExpenses=()=>{
             return currentUser? <Redirect to="/dashboard" /> : <Home login={this.login}/>
           }}/>
           <Route exact path="/dashboard" render={ () => {
-            return currentUser? <Dashboard expensesSum={expensesSum}  date={date} user={currentUser} accounts={accounts}  handleSelectAccount={this.handleSelectAccount} transactions={monthsTransactions} selectedAccount={selectedAccount}/> : <Redirect to='/'/>
+            return currentUser? <Dashboard handleDeleteTransaction={handleDeleteTransaction} expensesSum={expensesSum}  date={date} user={currentUser} accounts={accounts}  handleSelectAccount={this.handleSelectAccount} transactions={monthsTransactions} selectedAccount={selectedAccount}/> : <Redirect to='/'/>
           }}/>
           <Route exact path="/add-transaction" render={ () => {
-            return currentUser? <AddTransaction errorMessage={errorMessage} user={currentUser} handleAddTransaction={this.handleAddTransaction} selectedAccount={selectedAccount} /> : null
+            return currentUser? <AddTransaction handleAccountBalance={handleAccountBalance} errorMessage={errorMessage} user={currentUser} handleAddTransaction={this.handleAddTransaction} selectedAccount={selectedAccount} /> : null
           }}/>
 
         </Switch>

@@ -27,11 +27,13 @@ class Dashboard extends Component {
                             <h3>Account Balance: {selectedAccount.balance}</h3>
                             <h3>{date.month} Expenses: -{expensesSum}</h3>
                             <br></br>
-                            <h3>Transactions</h3>
+                            <h3>{date.month}'s Transactions</h3>
+                            
                                 {transactions? 
+                                
                                     transactions.map(transaction => {
 
-                                        return <Transaction key={transaction.id} transaction={transaction}/> 
+                                        return <Transaction key={transaction.id} handleDeleteTransaction={this.props.handleDeleteTransaction} transaction={transaction}/> 
 
                                     })
                                 :
