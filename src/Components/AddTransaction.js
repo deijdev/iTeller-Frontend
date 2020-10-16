@@ -80,7 +80,7 @@ class AddTransaction extends Component {
                </div>
                <form onSubmit={(e) => {
                    handleAddTransaction(e, this.state.formObj)
-                //    handleAccountBalance(e, this.props.selectedAccount, this.state.formObj.amount, this.state.formobj.t_type)
+                   handleAccountBalance(e, this.props.selectedAccount, this.state.formObj.amount, this.state.formObj.t_type)
                 }}>
                     <div>
                         <label htmlFor="amount">Amount</label>

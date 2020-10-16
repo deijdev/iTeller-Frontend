@@ -29,7 +29,7 @@ class Dashboard extends Component {
                             <br></br>
                             <h3>{date.month}'s Transactions</h3>
                             
-                                {transactions? 
+                                {transactions.length > 0? 
                                 
                                     transactions.map(transaction => {
 

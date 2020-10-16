@@ -24,7 +24,8 @@ class App extends Component {
       errorMessage : null,
       date : {},
       monthsTransactions: [],
-      expensesSum : null
+      expensesSum : null,
+      id : null
     }
   }
 
@@ -38,11 +39,16 @@ class App extends Component {
       })
       .then(resp => resp.json())
       .then(userData => {
-          //set date to variable
-          let date = new Date()
-          this.setState({currentUser : userData})
-          // fetch user accounts
+          this.setState({
+          currentUser : userData,
+          selectedAccount : userData.accounts[0]
+          })
+        // fetch user accounts
           this.fetchAccountsFromUser(userData.id)
+        // debugger
+        this.fetchAccountTransactions(userData.accounts[0].id)
+          // //set date to variable
+          let date = new Date()
           // Set current Date
           this.setState({
             date : {
@@ -50,10 +56,9 @@ class App extends Component {
               day: date.getDate(),
               year: date.getFullYear(),
               dow: this.getDayOfWeek(date.getDay())
-            }
-          })
+            }        
+        })
       })
-
     }
   }
 
@@ -83,10 +88,11 @@ class App extends Component {
     fetch(`http://localhost:3000/users/${id}`)
     .then(resp => resp.json())
     .then(user => {
+   
         // set initial state for accounts and selectedAccount
         this.setState({
             accounts : user.accounts,
-            selectedAccount : user.accounts[0] 
+            selectedAccount : user.accounts[0]
         })
         this.fetchAccountTransactions(user.accounts[0].id)
     })
@@ -127,7 +133,6 @@ class App extends Component {
   handleAddTransaction = (e, formObj) => {
     e.preventDefault()
  
-    console.log(formObj)
       fetch('http://localhost:3000/transactions',{
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -143,32 +148,36 @@ class App extends Component {
           this.setState({
             transactions : this.state.transactions.push(transactionData)
           })
-          // redirect to dashboard after everything is successful
-          window.location.assign("/dashboard");
-          return false;
+          // // redirect to dashboard after everything is successful
+          // window.location.assign("/dashboard");
+          // return false;
         }
       }) 
   }
 
-  //handle account balance//
+  //handle account balance//**** */
   handleAccountBalance=(e, selectedAccount, amount, t_type)=>{
     e.preventDefault()
-    // debugger
     let newBalance
-    t_type === 'expense' ? newBalance = selectedAccount.balance - amount : newBalance = selectedAccount.balance + amount 
+    
+    t_type === 'expense' ? newBalance = selectedAccount.balance - parseInt(amount) : newBalance = selectedAccount.balance + parseInt(amount)
     const accObj = {
       balance : newBalance
     }
     
+    // debugger
     fetch(`http://localhost:3000/accounts/${selectedAccount.id}`,{
       method : 'PATCH',
       headers : {'Content-Type': 'application/json'},
       body : JSON.stringify(accObj)
     })
-    .then(resp => resp.json)
-    .then(acctObj => {
-      console.log('yay:', acctObj)
-    })
+    // .then(resp => resp.json())
+    // .then(data => {
+    //   console.log('yay:', data)
+    // })
+        // redirect to dashboard after everything is successful
+        window.location.assign("/dashboard");
+        return false;
   }
   
 
@@ -189,7 +198,24 @@ class App extends Component {
         this.setState({errorMessage: data.error})
       }else{
       localStorage.setItem("token", data.token)
-      this.setState({currentUser : data.user_data.user})
+
+      //new date to be used below
+      let date = new Date()
+
+      this.setState({
+
+          currentUser : data.user_data.user,
+          //default account display
+          selectedAccount : data.user_data.user.accounts[0],
+          //display Month
+          date : {
+            month: this.getMonthFromDate(date.getMonth()),
+            day: date.getDate(),
+            year: date.getFullYear(),
+            dow: this.getDayOfWeek(date.getDay())
+          }        
+        })
+        this.fetchAccountsFromUser(data.user_data.user.id)
       }
     })
   }
@@ -209,14 +235,13 @@ sumExpenses=()=>{
 ///
 handleDeleteTransaction = (e, id) => {
 
-  // debugger
   fetch(`http://localhost:3000/transactions/${id}`, {
     method : 'DELETE',
     headers : {'Content-Type': 'application/json'}
   })
 
     let newTransactions = this.state.monthsTransactions.filter(transaction =>  transaction.id !== id)
-    // debugger
+
   
     this.setState({
       monthsTransactions : newTransactions
