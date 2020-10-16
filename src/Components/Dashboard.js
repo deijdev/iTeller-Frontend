@@ -6,7 +6,7 @@ import Transaction from '../Display/TransactionDiv'
 class Dashboard extends Component {
    
     render() {
-        let {user, handleSelectAccount, selectedAccount, accounts, transactions, date, expensesSum} = this.props
+        let {user, handleSelectAccount, balance, selectedAccount, accounts, transactions, date, expensesSum} = this.props
         
         if(user){
                 return (
@@ -24,7 +24,7 @@ class Dashboard extends Component {
                         <div>
                             {selectedAccount?
                             <>
-                            <h3>Account Balance: {selectedAccount.balance}</h3>
+                            <h3>Account Balance: {balance}</h3>
                             <h3>{date.month} Expenses: -{expensesSum}</h3>
                             <br></br>
                             <h3>{date.month}'s Transactions</h3>

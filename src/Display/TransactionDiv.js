@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class Transaction extends Component {
     render() {
         let {vendor,amount,date,category, t_type, id} = this.props.transaction
-        let {handleDeleteTransaction} = this.props
+        let {handleDeleteTransaction, transaction} = this.props
         return (
             <div>
                 <br></br>
@@ -19,7 +19,7 @@ class Transaction extends Component {
                 <p>Category: {category}</p>
 
                 <br></br>
-                <button onClick={(e)=>{handleDeleteTransaction(e, id)}}> Delete </button>
+                <button onClick={(e)=>{handleDeleteTransaction(e, transaction)}}> Delete </button>
             </div>
         );
     }
